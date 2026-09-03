@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecoverAI — AI-Powered Revenue Recovery & Payment Intelligence</title>
+  
+  <!-- Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/logo.svg" alt="RecoverAI Logo" class="logo-svg">
+        <span class="brand-title">
+          RecoverAI
+          <span class="brand-badge">PROD</span>
+        </span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Overview Group -->
+        <div class="nav-group-title">Overview</div>
+        <a class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" data-view="analytics" id="nav-analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Analytics
+        </a>
+
+        <!-- Operations Group -->
+        <div class="nav-group-title">Operations</div>
+        <a class="nav-item" data-view="payments" id="nav-payments">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          Payments
+        </a>
+        <a class="nav-item" data-view="recovery" id="nav-recovery">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          Recovery Center
+        </a>
+        <a class="nav-item" data-view="risk" id="nav-risk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Risk Intelligence
+        </a>
+        <a class="nav-item" data-view="customers" id="nav-customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Customers
+        </a>
+
+        <!-- System Group -->
+        <div class="nav-group-title">System</div>
+        <a class="nav-item" data-view="events" id="nav-events">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Events (Webhooks)
+        </a>
+        <a class="nav-item" data-view="audit" id="nav-audit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Audit Log
+        </a>
+        <a class="nav-item" data-view="settings" id="nav-settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator-bar">
+          <div>
+            <span class="status-dot" id="system-status-dot"></span>
+            <span id="system-status-text">API Connected</span>
+          </div>
+          <span class="code-pill">v1.0.0</span>
+        </div>
+        <div class="user-profile-badge">
+          <div class="avatar">OP</div>
+          <div class="user-info">
+            <span class="user-name">Fintech Operator</span>
+            <span class="user-role">Risk & Recovery Lead</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      
+      <!-- Top Navigation -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="breadcrumbs" id="breadcrumbs">
+            <span>Overview</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button class="btn-secondary btn-sm" id="btn-quick-ingest" title="Simulate an incoming payment event">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            New Payment
+          </button>
+
+          <button class="btn-icon" id="btn-refresh" title="Refresh Live Data">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Refresh
+          </button>
+
+          <button class="btn-primary btn-sm" id="btn-quick-seed" title="Seed realistic payment and recovery records">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Seed Demo Data
+          </button>
+        </div>
+      </header>
+
+      <!-- Main App Views -->
+      <main class="content-container">
+        
+        <!-- VIEW 1: DASHBOARD -->
+        <section id="view-dashboard" class="app-view">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Revenue Recovery</h1>
+              <p class="page-description">Monitor payment failures, revenue risk, and automated recovery activity.</p>
+            </div>
+            <div class="page-actions">
+              <span class="code-pill" id="dashboard-last-updated">Real-time sync</span>
+            </div>
+          </div>
+
+          <!-- Primary KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card highlight-rose">
+              <div class="kpi-header">
+                <span class="kpi-title">Revenue at Risk</span>
+                <div class="kpi-icon rose">⚠️</div>
+              </div>
+              <div class="kpi-value" id="kpi-revenue-at-risk">—</div>
+              <div class="kpi-subtext">Unrecovered failed payments</div>
+            </div>
+
+            <div class="kpi-card highlight-emerald">
+              <div class="kpi-header">
+                <span class="kpi-title">Recovered Revenue</span>
+                <div class="kpi-icon emerald">✓</div>
+              </div>
+              <div class="kpi-value" id="kpi-recovered-revenue">—</div>
+              <div class="kpi-subtext"><span class="trend-up">Realized</span> via automated dunning</div>
+            </div>
+
+            <div class="kpi-card highlight-cyan">
+              <div class="kpi-header">
+                <span class="kpi-title">Recovery Rate</span>
+                <div class="kpi-icon cyan">%</div>
+              </div>
+              <div class="kpi-value" id="kpi-recovery-rate">—</div>
+              <div class="kpi-subtext">Of total failed revenue</div>
+            </div>
+
+            <div class="kpi-card highlight-violet">
+              <div class="kpi-header">
+                <span class="kpi-title">Active Recovery Attempts</span>
+                <div class="kpi-icon violet">↻</div>
+              </div>
+              <div class="kpi-value" id="kpi-active-attempts">—</div>
+              <div class="kpi-subtext">In-flight bounded executions</div>
+            </div>
+          </div>
+
+          <!-- Secondary KPI Cards -->
+          <div class="kpi-grid-sub">
+            <div class="kpi-card">
+              <div class="kpi-header"><span class="kpi-title">Total Payments</span></div>
+              <div class="kpi-value" id="kpi-total-payments">—</div>
+              <div class="kpi-subtext">All time transactions</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-header"><span class="kpi-title">Failed Payments</span></div>
+              <div class="kpi-value" id="kpi-failed-payments">—</div>
+              <div class="kpi-subtext">Requiring intervention</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-header"><span class="kpi-title">Successful Recoveries</span></div>
+              <div class="kpi-value" id="kpi-successful-recoveries">—</div>
+              <div class="kpi-subtext">Confirmed via webhook</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-header"><span class="kpi-title">Human Escalations</span></div>
+              <div class="kpi-value" id="kpi-human-escalations">—</div>
+              <div class="kpi-subtext">Supervisor review required</div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="chart-grid-2col">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Recovery Interventions</h3>
+                  <p class="card-subtitle">Active distribution of recovery strategies across failed payments</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-interventions"></canvas>
+                  <div class="empty-state" id="chart-interventions-empty" style="display:none;">
+                    <div class="empty-state-text">No intervention data available yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Risk Distribution</h3>
+                  <p class="card-subtitle">Classification by explainable risk tiers</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-risk-dist"></canvas>
+                  <div class="empty-state" id="chart-risk-empty" style="display:none;">
+                    <div class="empty-state-text">No risk data available yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Tables -->
+          <div class="chart-grid-equal">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Payment Events</h3>
+                <button class="btn-secondary btn-sm" onclick="app.navigate('payments')">View All</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table" id="table-dashboard-payments">
+                  <thead>
+                    <tr>
+                      <th>Payment ID</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Risk</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Recovery Attempts</h3>
+                <button class="btn-secondary btn-sm" onclick="app.navigate('recovery')">View All</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table" id="table-dashboard-recoveries">
+                  <thead>
+                    <tr>
+                      <th>Attempt ID</th>
+                      <th>Strategy</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: ANALYTICS -->
+        <section id="view-analytics" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Recovery Analytics</h1>
+              <p class="page-description">Deep dive into financial recovery performance, failure root causes, and dunning efficacy.</p>
+            </div>
+            <div class="page-actions">
+              <select class="select-styled" id="analytics-timeframe-select">
+                <option value="7">Last 7 Days</option>
+                <option value="14" selected>Last 14 Days</option>
+                <option value="30">Last 30 Days</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Analytics Chart Grid -->
+          <div class="chart-grid-equal">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recovered Revenue Over Time</h3>
+                <p class="card-subtitle">Daily confirmed recovered revenue (₹)</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-recovered-timeline"></canvas>
+                  <div class="empty-state" id="chart-recovered-timeline-empty" style="display:none;">
+                    <div class="empty-state-text">No historical data available yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Revenue at Risk Over Time</h3>
+                <p class="card-subtitle">Daily failed payment exposure (₹)</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-risk-timeline"></canvas>
+                  <div class="empty-state" id="chart-risk-timeline-empty" style="display:none;">
+                    <div class="empty-state-text">No historical data available yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-grid-2col" style="margin-top:20px;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Failure Reason Breakdown</h3>
+                <p class="card-subtitle">Card decline codes distribution</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-failure-reasons"></canvas>
+                  <div class="empty-state" id="chart-failure-reasons-empty" style="display:none;">
+                    <div class="empty-state-text">No failure data available yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Intervention Success Rates</h3>
+                <p class="card-subtitle">Recovery conversion rate per strategy</p>
+              </div>
+              <div class="card-body">
+                <div id="intervention-success-rates-container">
+                  <!-- Dynamically populated progress bars -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: PAYMENTS -->
+        <section id="view-payments" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Payments Ledger</h1>
+              <p class="page-description">Search, filter, and inspect payment transactions, decline codes, and risk profiles.</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn-primary btn-sm" id="btn-payments-ingest">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Ingest Payment Event
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Controls -->
+          <div class="table-filter-bar">
+            <div class="filter-group">
+              <div class="search-input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="input-styled" id="payments-search-input" placeholder="Search payment ID, customer, or failure code...">
+              </div>
+
+              <select class="select-styled" id="payments-status-filter">
+                <option value="ALL">All Statuses</option>
+                <option value="FAILED">FAILED</option>
+                <option value="CAPTURED">CAPTURED</option>
+                <option value="PENDING">PENDING</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+
+              <select class="select-styled" id="payments-risk-filter">
+                <option value="ALL">All Risk Levels</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="HIGH">HIGH</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="LOW">LOW</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <select class="select-styled" id="payments-sort-select">
+                <option value="created_at_desc">Newest First</option>
+                <option value="created_at_asc">Oldest First</option>
+                <option value="amount_desc">Highest Amount</option>
+                <option value="amount_asc">Lowest Amount</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Payments Table -->
+          <div class="table-responsive">
+            <table class="data-table" id="table-payments">
+              <thead>
+                <tr>
+                  <th>Payment ID</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Currency</th>
+                  <th>Status</th>
+                  <th>Risk Tier</th>
+                  <th>Failure Reason</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="payments-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+            
+            <div class="empty-state" id="payments-empty-state" style="display:none;">
+              <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              <h4 class="empty-state-title">No payments found</h4>
+              <p class="empty-state-text">No payment records match the current filter criteria or the database is currently empty.</p>
+              <button class="btn-primary btn-sm" onclick="app.seedData()">Seed Realistic Payments</button>
+            </div>
+
+            <div class="pagination-bar">
+              <span id="payments-pagination-info">Showing 0 payments</span>
+              <div class="pagination-controls">
+                <button class="btn-secondary btn-sm" id="payments-prev-page" disabled>Previous</button>
+                <span id="payments-page-num" class="code-pill">Page 1</span>
+                <button class="btn-secondary btn-sm" id="payments-next-page" disabled>Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: RECOVERY CENTER -->
+        <section id="view-recovery" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Recovery Center</h1>
+              <p class="page-description">Manage bounded recovery attempts, human escalations, and automated dunning workflows.</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn-primary btn-sm" id="btn-new-recovery-modal">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Launch Recovery Action
+              </button>
+            </div>
+          </div>
+
+          <!-- Recovery Tabs -->
+          <div class="table-filter-bar">
+            <div class="filter-group">
+              <select class="select-styled" id="recovery-status-filter">
+                <option value="ALL">All Attempt States</option>
+                <option value="PENDING">Active (In Flight)</option>
+                <option value="SUCCEEDED">Succeeded</option>
+                <option value="ESCALATED">Human Escalations</option>
+                <option value="FAILED">Failed</option>
+              </select>
+
+              <select class="select-styled" id="recovery-strategy-filter">
+                <option value="ALL">All Strategies</option>
+                <option value="RETRY_PAYMENT">RETRY_PAYMENT</option>
+                <option value="SEND_PAYMENT_LINK">SEND_PAYMENT_LINK</option>
+                <option value="ALTERNATE_PAYMENT_METHOD">ALTERNATE_PAYMENT_METHOD</option>
+                <option value="CUSTOMER_REMINDER">CUSTOMER_REMINDER</option>
+                <option value="SUBSCRIPTION_RETRY">SUBSCRIPTION_RETRY</option>
+                <option value="HUMAN_ESCALATION">HUMAN_ESCALATION</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Recovery Attempts Table -->
+          <div class="table-responsive">
+            <table class="data-table" id="table-recovery">
+              <thead>
+                <tr>
+                  <th>Attempt ID</th>
+                  <th>Payment ID</th>
+                  <th>Strategy</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Recovered</th>
+                  <th>Est. Probability</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recovery-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+
+            <div class="empty-state" id="recovery-empty-state" style="display:none;">
+              <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <h4 class="empty-state-title">No recovery attempts recorded</h4>
+              <p class="empty-state-text">No active or historical recovery attempts found.</p>
+              <button class="btn-primary btn-sm" onclick="app.navigate('payments')">Pick a Failed Payment to Recover</button>
+            </div>
+
+            <div class="pagination-bar">
+              <span id="recovery-pagination-info">Showing 0 attempts</span>
+              <div class="pagination-controls">
+                <button class="btn-secondary btn-sm" id="recovery-prev-page" disabled>Previous</button>
+                <span id="recovery-page-num" class="code-pill">Page 1</span>
+                <button class="btn-secondary btn-sm" id="recovery-next-page" disabled>Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 5: RISK INTELLIGENCE -->
+        <section id="view-risk" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Risk Intelligence Engine</h1>
+              <p class="page-description">Explainable scoring, root cause analysis, and risk breakdown for payment failures.</p>
+            </div>
+          </div>
+
+          <div class="chart-grid-2col">
+            <!-- Risk Input Form -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Analyze Payment Risk</h3>
+              </div>
+              <div class="card-body">
+                <form id="form-risk-analyze" onsubmit="event.preventDefault(); app.handleRiskAnalyzeForm();">
+                  <div style="margin-bottom: 16px;">
+                    <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Target Payment ID</label>
+                    <div style="display:flex; gap:10px;">
+                      <input type="text" class="input-styled" id="risk-input-payment-id" placeholder="e.g. pay_sec_991823" style="flex:1;" required>
+                      <button type="submit" class="btn-primary" id="btn-run-risk-analysis">
+                        <span>Analyze</span>
+                      </button>
+                    </div>
+                    <span style="font-size:0.75rem; color:var(--text-muted); margin-top:4px; display:block;">Enter an existing payment ID to run full multi-factor explainable scoring.</span>
+                  </div>
+                </form>
+
+                <div style="margin-top: 24px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+                  <h4 style="font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;">Explainable Engine Factors</h4>
+                  <ul style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; padding-left: 18px;">
+                    <li><strong>Decline Classification:</strong> Evaluates transient bank glitch vs. security fraud vs. credential expiration.</li>
+                    <li><strong>Exposure Tiering:</strong> Assesses micro-transactions vs. high-value ticket sizes.</li>
+                    <li><strong>Attempt Fatigue:</strong> Bounded retries prevent issuer blocking and customer annoyance.</li>
+                    <li><strong>Aging Decay:</strong> Recency impact on recovery probability.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Analysis Result Card -->
+            <div class="card" id="risk-result-card">
+              <div class="card-header">
+                <h3 class="card-title">Risk Assessment Output</h3>
+                <span class="badge badge-neutral" id="risk-badge-tier">—</span>
+              </div>
+              <div class="card-body" id="risk-result-body">
+                <div class="empty-state">
+                  <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  <h4 class="empty-state-title">Ready for Analysis</h4>
+                  <p class="empty-state-text">Enter a Payment ID or select a failed payment from the ledger to compute explainable risk scores.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 6: CUSTOMERS -->
+        <section id="view-customers" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Customer Risk Directory</h1>
+              <p class="page-description">Customer-level payment health, revenue exposure, and recovery history.</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="table-customers">
+              <thead>
+                <tr>
+                  <th>Customer ID</th>
+                  <th>Payment Count</th>
+                  <th>Failed Count</th>
+                  <th>Recovered Revenue</th>
+                  <th>Revenue at Risk</th>
+                  <th>Last Payment</th>
+                  <th>Health Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customers-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+
+            <div class="empty-state" id="customers-empty-state" style="display:none;">
+              <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              <h4 class="empty-state-title">No customer data</h4>
+              <p class="empty-state-text">Customer profiles will appear once payment events are ingested.</p>
+              <button class="btn-primary btn-sm" onclick="app.seedData()">Seed Customer Data</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 7: EVENTS (WEBHOOK SIMULATOR) -->
+        <section id="view-events" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Payment Webhook Console</h1>
+              <p class="page-description">Simulate and test incoming payment provider webhooks (e.g. Stripe, Adyen) with live idempotency verification.</p>
+            </div>
+          </div>
+
+          <div class="chart-grid-2col">
+            <!-- Webhook Form -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Simulate Provider Webhook</h3>
+              </div>
+              <div class="card-body">
+                <form id="form-webhook-simulator" onsubmit="event.preventDefault(); app.handleWebhookSubmit();">
+                  <div style="margin-bottom: 14px;">
+                    <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">Event ID (Unique)</label>
+                    <div style="display:flex; gap:8px;">
+                      <input type="text" class="input-styled" id="wh-event-id" style="flex:1;" required>
+                      <button type="button" class="btn-secondary btn-sm" onclick="app.generateWebhookEventId()">Generate</button>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom: 14px;">
+                    <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">Payment ID</label>
+                    <input type="text" class="input-styled" id="wh-payment-id" placeholder="e.g. pay_sec_991823" style="width:100%;" required>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 14px;">
+                    <div>
+                      <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">Event Status</label>
+                      <select class="select-styled" id="wh-status" style="width:100%;">
+                        <option value="captured">captured (Success)</option>
+                        <option value="failed">failed (Decline)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">Amount (₹)</label>
+                      <input type="number" step="0.01" min="0.01" class="input-styled" id="wh-amount" value="14200.00" style="width:100%;" required>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom: 18px;">
+                    <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">Failure Reason (Optional)</label>
+                    <input type="text" class="input-styled" id="wh-reason" placeholder="e.g. Issuer decline code 05" style="width:100%;">
+                  </div>
+
+                  <button type="submit" class="btn-primary" style="width:100%;">
+                    <span>Dispatch Webhook</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Webhook Response & Inspector -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Live Webhook Inspector</h3>
+                <span class="code-pill">POST /api/webhooks/payment</span>
+              </div>
+              <div class="card-body">
+                <div id="wh-inspector-output" style="background:#080C14; border:1px solid var(--border-card); border-radius:var(--radius-sm); padding:14px; font-family:var(--font-mono); font-size:0.8rem; color:var(--accent-cyan); min-height:220px; overflow-x:auto;">
+                  // Webhook responses and idempotency logs will appear here.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 8: AUDIT LOG -->
+        <section id="view-audit" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Audit Trail</h1>
+              <p class="page-description">Immutable chronological log of payment events, risk evaluations, recovery executions, and supervisor approvals.</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="table-audit">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Action</th>
+                  <th>Payment ID</th>
+                  <th>Attempt ID</th>
+                  <th>Actor</th>
+                  <th>Status</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+
+            <div class="empty-state" id="audit-empty-state" style="display:none;">
+              <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+              <h4 class="empty-state-title">Audit log is empty</h4>
+              <p class="empty-state-text">System events will be recorded here automatically.</p>
+            </div>
+
+            <div class="pagination-bar">
+              <span id="audit-pagination-info">Showing 0 log entries</span>
+              <div class="pagination-controls">
+                <button class="btn-secondary btn-sm" id="audit-prev-page" disabled>Previous</button>
+                <span id="audit-page-num" class="code-pill">Page 1</span>
+                <button class="btn-secondary btn-sm" id="audit-next-page" disabled>Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 9: SETTINGS -->
+        <section id="view-settings" class="app-view" style="display:none;">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Platform Settings & Diagnostics</h1>
+              <p class="page-description">Configuration parameters, API health, database statistics, and sandbox sandbox controls.</p>
+            </div>
+          </div>
+
+          <div class="chart-grid-equal">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">System Environment</h3>
+              </div>
+              <div class="card-body">
+                <table class="data-table">
+                  <tbody>
+                    <tr><td><strong>Application</strong></td><td>RecoverAI Revenue Intelligence</td></tr>
+                    <tr><td><strong>Version</strong></td><td><span class="code-pill">v1.0.0</span></td></tr>
+                    <tr><td><strong>API Endpoint</strong></td><td><span class="code-pill" id="settings-api-url">http://127.0.0.1:8000/api</span></td></tr>
+                    <tr><td><strong>Environment</strong></td><td><span class="badge badge-low">development</span></td></tr>
+                    <tr><td><strong>Database Engine</strong></td><td>SQLite (SQLAlchemy ORM)</td></tr>
+                    <tr><td><strong>PCI-DSS Compliance</strong></td><td><span class="badge badge-healthy">Zero Card Data Stored</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Demo Sandbox Controls</h3>
+              </div>
+              <div class="card-body">
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:16px;">
+                  Quickly populate or reset database records to test different workflow scenarios:
+                </p>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <button class="btn-primary" onclick="app.seedData()">
+                    <span>Seed Realistic Demo Dataset (12 Scenarios)</span>
+                  </button>
+                  <button class="btn-danger" onclick="app.clearData()">
+                    <span>Wipe All Database Tables (Clean State)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Modals
+       ========================================================================== -->
+
+  <!-- Modal: Recovery Execution Confirmation -->
+  <div class="modal-backdrop" id="modal-recovery-confirm">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Recovery Attempt</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-recovery-confirm')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-active); border:1px solid rgba(6,182,212,0.3); border-radius:var(--radius-sm); padding:12px; margin-bottom:16px; font-size:0.85rem;">
+          ℹ️ <strong>Bounded Recovery Safety Rule:</strong> Recovery attempts are initiated in <code>PENDING</code> status. Recovery is not confirmed until a successful webhook event is received.
+        </div>
+
+        <table class="data-table" style="margin-bottom:16px;">
+          <tbody>
+            <tr><td><strong>Target Payment</strong></td><td><span id="m-rec-payment-id" class="code-pill">pay_xxx</span></td></tr>
+            <tr><td><strong>Recovery Amount</strong></td><td><span id="m-rec-amount" class="currency-amount">₹0.00</span></td></tr>
+            <tr><td><strong>Recommended Action</strong></td><td><span id="m-rec-strategy" class="badge badge-low">RETRY_PAYMENT</span></td></tr>
+            <tr><td><strong>Est. Probability</strong></td><td><span id="m-rec-probability">75%</span></td></tr>
+          </tbody>
+        </table>
+
+        <div id="m-rec-guardrails-container" style="font-size:0.8rem; color:var(--text-muted);">
+          <!-- Guardrails list -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="app.closeModal('modal-recovery-confirm')">Cancel</button>
+        <button class="btn-primary" id="btn-confirm-recovery-execute">
+          <span>Create Recovery Attempt</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Create / Ingest Payment -->
+  <div class="modal-backdrop" id="modal-payment-create">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Ingest Payment Event</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-payment-create')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-create-payment" onsubmit="event.preventDefault(); app.handlePaymentCreateSubmit();">
+          <div style="margin-bottom:12px;">
+            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Payment ID</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="input-styled" id="new-pay-id" style="flex:1;" required>
+              <button type="button" class="btn-secondary btn-sm" onclick="app.generatePaymentId()">Generate</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Customer ID</label>
+              <input type="text" class="input-styled" id="new-pay-customer" value="cus_aurora_801" style="width:100%;" required>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Amount (₹)</label>
+              <input type="number" step="0.01" min="0.01" class="input-styled" id="new-pay-amount" value="3499.00" style="width:100%;" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Initial Status</label>
+              <select class="select-styled" id="new-pay-status" style="width:100%;">
+                <option value="FAILED">FAILED</option>
+                <option value="CAPTURED">CAPTURED</option>
+                <option value="PENDING">PENDING</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Failure Code</label>
+              <select class="select-styled" id="new-pay-failure-code" style="width:100%;">
+                <option value="insufficient_funds">insufficient_funds</option>
+                <option value="authentication_required">authentication_required</option>
+                <option value="expired_card">expired_card</option>
+                <option value="network_error">network_error</option>
+                <option value="fraud_suspected">fraud_suspected</option>
+                <option value="do_not_honor">do_not_honor</option>
+                <option value="processing_error">processing_error</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px;">Failure Reason</label>
+            <input type="text" class="input-styled" id="new-pay-reason" value="Account has insufficient funds at settlement" style="width:100%;">
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%;">
+            <span>Ingest Payment</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-Over Drawer: Payment Details -->
+  <div class="drawer-backdrop" id="drawer-payment-detail">
+    <div class="drawer">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="drawer-pay-id">Payment Details</h3>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="drawer-pay-customer">Customer: —</span>
+        </div>
+        <button class="modal-close" onclick="app.closeDrawer('drawer-payment-detail')">&times;</button>
+      </div>
+      <div class="modal-body" id="drawer-pay-body">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
