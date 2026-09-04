@@ -5,8 +5,10 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_DIR = BASE_DIR / "data"
+
+DB_DIR = Path("/tmp/data")
 DB_DIR.mkdir(parents=True, exist_ok=True)
+
 DB_PATH = DB_DIR / "recoverai.db"
 
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")

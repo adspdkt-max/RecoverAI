@@ -92,7 +92,7 @@ function showToast(message, type = "info") {
 
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
-  
+
   const iconMap = {
     success: "✓",
     error: "✕",
@@ -213,7 +213,7 @@ function navigate(viewName) {
   // Update Breadcrumbs
   const breadcrumbs = document.getElementById("breadcrumbs");
   const group = (viewName === "dashboard" || viewName === "analytics") ? "Overview" :
-                (viewName === "events" || viewName === "audit" || viewName === "settings") ? "System" : "Operations";
+    (viewName === "events" || viewName === "audit" || viewName === "settings") ? "System" : "Operations";
   const title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
   breadcrumbs.innerHTML = `<span>${group}</span><span class="crumb-sep">/</span><span class="crumb-active">${title}</span>`;
 
